@@ -2,7 +2,7 @@ package commands
 
 import (
 	"fmt"
-	"github.com/valivishy/pokedex/internal/api"
+	"github.com/valivishy/pokedex/internal/api/locations"
 )
 
 func CommandMap(cfg *Config) error {
@@ -15,7 +15,7 @@ func CommandMapBack(cfg *Config) error {
 
 // region PRIVATE
 func printLocationsAndUpdateUrls(cfg *Config, url *string) error {
-	response, err := api.List(url)
+	response, err := locations.List(url)
 	if err != nil {
 		return err
 	}

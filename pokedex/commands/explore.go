@@ -3,7 +3,7 @@ package commands
 import (
 	"errors"
 	"fmt"
-	"github.com/valivishy/pokedex/internal/api"
+	"github.com/valivishy/pokedex/internal/api/locations"
 )
 
 func CommandExplore(_ *Config, params []string) error {
@@ -21,7 +21,7 @@ func exploreLocation(params []string) error {
 	}
 
 	area := params[0]
-	response, err := api.Get(area)
+	response, err := locations.Get(area)
 	if err != nil {
 		return err
 	}

@@ -3,7 +3,7 @@ package tests
 import (
 	"encoding/json"
 	"github.com/valivishy/pokedex/commands"
-	"github.com/valivishy/pokedex/internal/api"
+	"github.com/valivishy/pokedex/internal/api/locations"
 	"github.com/valivishy/pokedex/internal/cache"
 	"net/http"
 	"net/http/httptest"
@@ -48,11 +48,11 @@ func TestReapRemovesExpiredEntries(t *testing.T) {
 func TestCacheUsedForSubsequentCalls(t *testing.T) {
 	callCount := 0
 
-	mockResponse := api.LocationList{
+	mockResponse := locations.LocationList{
 		Count:    1,
 		Next:     nil,
 		Previous: nil,
-		Results: []api.Location{
+		Results: []locations.Location{
 			{Name: "cached-location", URL: "https://pokeapi.co/test"},
 		},
 	}
@@ -68,12 +68,12 @@ func TestCacheUsedForSubsequentCalls(t *testing.T) {
 
 	cfg := &commands.Config{Next: &server.URL}
 
-	_, err := api.List(cfg.Next)
+	_, err := locations.List(cfg.Next)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}
 
-	_, err = api.List(cfg.Next)
+	_, err = locations.List(cfg.Next)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}

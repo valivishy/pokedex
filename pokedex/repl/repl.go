@@ -40,6 +40,11 @@ func StartRepl() {
 			Description: "Explore the location passed as argument",
 			Callback:    func(params []string) error { return commands.CommandExplore(cfg, params) },
 		},
+		"catch": {
+			Name:        "catch",
+			Description: "Attempt to catch the pokemon passed as argument",
+			Callback:    func(params []string) error { return commands.CommandCatch(cfg, params) },
+		},
 	}
 
 	reader := bufio.NewScanner(os.Stdin)

@@ -4,18 +4,18 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/valivishy/pokedex/commands"
-	"github.com/valivishy/pokedex/internal/api"
+	"github.com/valivishy/pokedex/internal/api/locations"
 	"net/http"
 	"net/http/httptest"
 	"testing"
 )
 
 func TestGetNextLocations(t *testing.T) {
-	mockResponse := api.LocationList{
+	mockResponse := locations.LocationList{
 		Count:    1,
 		Next:     nil,
 		Previous: nil,
-		Results: []api.Location{
+		Results: []locations.Location{
 			{Name: "test-location", URL: "https://pokeapi.co/test"},
 		},
 	}
@@ -25,7 +25,7 @@ func TestGetNextLocations(t *testing.T) {
 
 	cfg := &commands.Config{Next: &server.URL}
 
-	locationResponse, err := api.List(cfg.Next)
+	locationResponse, err := locations.List(cfg.Next)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}
@@ -38,11 +38,11 @@ func TestGetNextLocations(t *testing.T) {
 }
 
 func TestGetPreviousLocations(t *testing.T) {
-	mockResponse := api.LocationList{
+	mockResponse := locations.LocationList{
 		Count:    1,
 		Next:     nil,
 		Previous: nil,
-		Results: []api.Location{
+		Results: []locations.Location{
 			{Name: "previous-location", URL: "https://pokeapi.co/previous"},
 		},
 	}
@@ -52,7 +52,7 @@ func TestGetPreviousLocations(t *testing.T) {
 
 	cfg := &commands.Config{Previous: &server.URL}
 
-	locationResponse, err := api.List(cfg.Previous)
+	locationResponse, err := locations.List(cfg.Previous)
 	if err != nil {
 		t.Fatalf("Expected no error, got: %v", err)
 	}
@@ -65,11 +65,11 @@ func TestGetPreviousLocations(t *testing.T) {
 }
 
 func TestCommandMap(t *testing.T) {
-	mockResponse := api.LocationList{
+	mockResponse := locations.LocationList{
 		Count:    1,
 		Next:     nil,
 		Previous: nil,
-		Results: []api.Location{
+		Results: []locations.Location{
 			{Name: "command-location", URL: "https://pokeapi.co/command"},
 		},
 	}
@@ -85,7 +85,7 @@ func TestCommandMap(t *testing.T) {
 	}
 }
 
-func prepareServer(mockResponse api.LocationList) *httptest.Server {
+func prepareServer(mockResponse locations.LocationList) *httptest.Server {
 	server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		err := json.NewEncoder(w).Encode(mockResponse)
 		if err != nil {

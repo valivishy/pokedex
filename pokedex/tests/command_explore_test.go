@@ -2,7 +2,7 @@ package tests
 
 import (
 	"github.com/valivishy/pokedex/commands"
-	"github.com/valivishy/pokedex/internal/api"
+	"github.com/valivishy/pokedex/internal/api/locations"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -22,7 +22,7 @@ func TestExploreLocation_APIFailure(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api.BaseUrl = ts.URL
+	locations.GetBaseUrl = ts.URL
 	err := commands.CommandExplore(nil, []string{"kanto"})
 	if err == nil || !strings.Contains(err.Error(), "500") {
 		t.Fatalf("expected 500 error, got: %v", err)
@@ -41,7 +41,7 @@ func TestCommandExplore_Success(t *testing.T) {
 	}))
 	defer ts.Close()
 
-	api.BaseUrl = ts.URL
+	locations.GetBaseUrl = ts.URL
 	err := commands.CommandExplore(nil, []string{"kanto"})
 	if err != nil {
 		t.Fatalf("expected no error, got: %v", err)
