@@ -58,3 +58,15 @@ func Inspect(name string) {
 		fmt.Printf("  - %s\n", t.Type.Name)
 	}
 }
+
+func List() {
+	if len(pokedex) == 0 {
+		fmt.Println("no Pokemon caught")
+		return
+	}
+
+	fmt.Println("Your Pokedex:")
+	for _, pokemon := range pokedex {
+		fmt.Printf(" - %s\n", pokemon.Name)
+	}
+}

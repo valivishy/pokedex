@@ -50,6 +50,11 @@ func StartRepl() {
 			Description: "Inspect a Pokemon that's in your Pokedex",
 			Callback:    func(params []string) error { return commands.CommandInspect(cfg, params) },
 		},
+		"pokedex": {
+			Name:        "pokedex",
+			Description: "List all caught Pokemon",
+			Callback:    func(params []string) error { return commands.CommandPokedex(cfg, params) },
+		},
 	}
 
 	reader := bufio.NewScanner(os.Stdin)
