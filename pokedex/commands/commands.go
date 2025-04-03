@@ -12,7 +12,7 @@ type Config struct {
 type CLICommand struct {
 	Name        string
 	Description string
-	Callback    func() error
+	Callback    func([]string) error
 }
 
 func CommandExit(_ *Config) error {

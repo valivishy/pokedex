@@ -10,31 +10,36 @@ import (
 	"time"
 )
 
-type Location struct {
-	Name string `json:"name"`
-	URL  string `json:"url"`
-}
-
-type Response struct {
-	Count    int        `json:"count"`
-	Next     *string    `json:"next"`
-	Previous *string    `json:"previous"`
-	Results  []Location `json:"results"`
-}
-
+var BaseUrl = "https://pokeapi.co/api/v2/location-area"
 var localCache = cache.NewCache(time.Second * 5)
 
-func List(url *string) (*Response, error) {
+func List(url *string) (*LocationList, error) {
 	if url == nil {
 		return nil, errors.New("no more locations in this direction")
 	}
 
-	body, err := get(url)
+	body, err := get(*url)
 	if err != nil {
 		return nil, err
 	}
 
-	response := Response{}
+	response := LocationList{}
+
+	err = json.Unmarshal(body, &response)
+	if err != nil {
+		return nil, err
+	}
+
+	return &response, nil
+}
+
+func Get(name string) (*LocationDetails, error) {
+	body, err := get(fmt.Sprintf("%s/%s", BaseUrl, name))
+	if err != nil {
+		return nil, err
+	}
+
+	response := LocationDetails{}
 
 	err = json.Unmarshal(body, &response)
 	if err != nil {
@@ -45,13 +50,13 @@ func List(url *string) (*Response, error) {
 }
 
 // region PRIVATE
-func get(url *string) ([]byte, error) {
-	if value, ok := localCache.Get(*url); ok {
-		fmt.Printf("%s found in cache, returning early\n", *url)
+func get(url string) ([]byte, error) {
+	if value, ok := localCache.Get(url); ok {
+		fmt.Printf("%s found in cache, returning early\n", url)
 		return value, nil
 	}
 
-	resp, err := http.Get(*url)
+	resp, err := http.Get(url)
 	if err != nil {
 		return nil, err
 	}
@@ -62,11 +67,15 @@ func get(url *string) ([]byte, error) {
 		}
 	}()
 
+	if resp.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("%s returned status code %d", url, resp.StatusCode)
+	}
+
 	result, err := io.ReadAll(resp.Body)
 	if err != nil {
 		return nil, err
 	}
-	localCache.Add(*url, result)
+	localCache.Add(url, result)
 
 	return result, nil
 }

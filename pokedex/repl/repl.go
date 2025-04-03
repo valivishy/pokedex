@@ -18,22 +18,27 @@ func StartRepl() {
 		"exit": {
 			Name:        "exit",
 			Description: "Exit the Pokedex",
-			Callback:    func() error { return commands.CommandExit(cfg) },
+			Callback:    func(params []string) error { return commands.CommandExit(cfg) },
 		},
 		"help": {
 			Name:        "help",
 			Description: "Help",
-			Callback:    func() error { return commands.CommandHelp(cfg) },
+			Callback:    func(params []string) error { return commands.CommandHelp(cfg) },
 		},
 		"map": {
 			Name:        "map",
 			Description: "Show the map",
-			Callback:    func() error { return commands.CommandMap(cfg) },
+			Callback:    func(params []string) error { return commands.CommandMap(cfg) },
 		},
 		"mapb": {
 			Name:        "mapb",
 			Description: "Show the map in binary format",
-			Callback:    func() error { return commands.CommandMapBack(cfg) },
+			Callback:    func(params []string) error { return commands.CommandMapBack(cfg) },
+		},
+		"explore": {
+			Name:        "explore",
+			Description: "Explore the location passed as argument",
+			Callback:    func(params []string) error { return commands.CommandExplore(cfg, params) },
 		},
 	}
 
@@ -53,7 +58,7 @@ func StartRepl() {
 			continue
 		}
 
-		err := cmd.Callback()
+		err := cmd.Callback(words[1:])
 		if err != nil {
 			fmt.Println(err)
 			continue
